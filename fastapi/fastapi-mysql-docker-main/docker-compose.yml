@@ -1,0 +1,26 @@
+version: "3"
+services:
+  mysql:
+    container_name: mysql_prototype
+    build: ./mysql/
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/db:/docker-entrypoint-initdb.d
+      - ./mysql/conf.d:/etc/mysql/conf.d
+    env_file:
+      - ./mysql/local.env
+    tty: true
+  api:
+    depends_on:
+      - mysql
+    container_name: fast_api_prototype
+    build: ./api
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./api:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - ./api/local.env

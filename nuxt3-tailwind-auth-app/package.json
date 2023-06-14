@@ -1,0 +1,48 @@
+{
+  "name": "nuxt3-tailwind-auth-app",
+  "version": "0.0.2",
+  "description": "An example app using Nuxt3 with TailwindCSS.",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Masaki Yoshiiwa",
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev -o",
+    "tailwind": "tailwind-config-viewer -o -p 4000",
+    "build": "nuxi build",
+    "start": "node .output/server/index.mjs",
+    "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css,vue}'",
+    "lint": "eslint . --ext .vue,.ts",
+    "lint:fix": "eslint . --ext .vue,.ts  --fix",
+    "tsc": "tsc"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@nuxt/vite-builder": "^3.1.1",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
+    "@types/blueimp-md5": "^2.18.0",
+    "@types/node": "^18.11.18",
+    "@types/zxcvbn": "^4.4.1",
+    "@typescript-eslint/parser": "^5.49.0",
+    "autoprefixer": "^10.4.13",
+    "axios": "^1.2.6",
+    "blueimp-md5": "^2.19.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "nuxt": "^3.1.1",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.3",
+    "sass": "^1.57.1",
+    "tailwind-config-viewer": "^1.7.2",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^4.9.4",
+    "vee-validate": "^4.7.3",
+    "vite-plugin-eslint": "^1.8.1",
+    "yup": "^0.32.11",
+    "zxcvbn": "^4.4.2"
+  }
+}
