@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException, Security
-from fastapi.middleware.cors import CORSMiddleware
-from database.query import query_get, query_put, query_update
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Security, WebSocket
 from fastapi.encoders import jsonable_encoder
-from user import Auth, SignInRequestModel, SignUpRequestModel, UserAuthResponseModel, UserUpdateRequestModel, UserResponseModel, register_user, signin_user, update_user, get_all_users, get_user_by_id
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from user import Auth, SignInRequestModel, SignUpRequestModel, UserAuthResponseModel, \
+    UserResponseModel, UserUpdateRequestModel, get_all_users, get_user_by_id, register_user, \
+    signin_user, update_user
 
 app = FastAPI()
 
@@ -40,7 +42,8 @@ def signup_api(user_details: SignUpRequestModel):
     user = register_user(user_details)
     access_token = auth_handler.encode_token(user_details.email)
     refresh_token = auth_handler.encode_refresh_token(user_details.email)
-    return JSONResponse(status_code=200, content={'token': {'access_token': access_token, 'refresh_token': refresh_token}, 'user': user})
+    return JSONResponse(status_code=200, content={
+        'token': {'access_token': access_token, 'refresh_token': refresh_token}, 'user': user})
 
 
 @app.post('/v1/signin', response_model=UserAuthResponseModel)
@@ -51,7 +54,8 @@ def signin_api(user_details: SignInRequestModel):
     user = signin_user(user_details.email, user_details.password)
     access_token = auth_handler.encode_token(user['email'])
     refresh_token = auth_handler.encode_refresh_token(user['email'])
-    return JSONResponse(status_code=200, content={'token': {'access_token': access_token, 'refresh_token': refresh_token}, 'user': user})
+    return JSONResponse(status_code=200, content={
+        'token': {'access_token': access_token, 'refresh_token': refresh_token}, 'user': user})
 
 
 @app.get('/v1/refresh-token')
@@ -92,7 +96,8 @@ def get_user_api(user_id: int, credentials: HTTPAuthorizationCredentials = Secur
 
 
 @app.post("/v1/user/update", response_model=UserResponseModel)
-def update_user_api(user_details: UserUpdateRequestModel, credentials: HTTPAuthorizationCredentials = Security(security)):
+def update_user_api(user_details: UserUpdateRequestModel,
+                    credentials: HTTPAuthorizationCredentials = Security(security)):
     """
     This user update API allow you to update user data.
     """
@@ -123,3 +128,19 @@ def not_secret_data_api():
     This not-secret API is just for testing.
     """
     return 'Not secret data'
+
+
+###############################
+########## websocket APIs ##########
+###############################
+
+
+# WebSocket接続用のエンドポイント
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        # クライアントからメッセージを受信
+        data = await websocket.receive_text()
+        # 受信したメッセージを他のクライアントに送信（ブロードキャスト）
+        await websocket.send_text(data)

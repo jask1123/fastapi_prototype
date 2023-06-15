@@ -22,6 +22,15 @@
         Sign out
       </button>
     </div>
+    <div class="mb-4">
+      <button
+        class="bg-green-400 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        type="button"
+        @click="goToNextPage"
+      >
+        chat page
+      </button>
+    </div>
   </div>
 </template>
 
@@ -32,6 +41,10 @@ export default defineNuxtComponent({
   setup() {
     const { $router } = useNuxtApp();
     const auth = useAuth();
+
+    const goToNextPage = () => {
+      $router.push("/chat");
+    };
     const signout = () => {
       localStorage.clear();
       auth.setAuthState(null);
@@ -44,6 +57,7 @@ export default defineNuxtComponent({
       last_name: String(auth.userState.value?.last_name),
     };
     return {
+      goToNextPage,
       signout,
       v,
     };

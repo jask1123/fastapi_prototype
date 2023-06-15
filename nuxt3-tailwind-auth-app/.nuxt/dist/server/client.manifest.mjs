@@ -6,10 +6,10 @@ export default {
     "module": true,
     "resourceType": "script"
   },
-  "/Users/user/開発/fastapi_proto/fastapi_prototype/nuxt3-tailwind-auth-app/node_modules/nuxt/dist/app/entry.js": {
+  "/Users/user/開発/fastapi/fastapi_prototype/nuxt3-tailwind-auth-app/node_modules/nuxt/dist/app/entry.js": {
     "resourceType": "script",
     "module": true,
     "isEntry": true,
-    "file": "/Users/user/開発/fastapi_proto/fastapi_prototype/nuxt3-tailwind-auth-app/node_modules/nuxt/dist/app/entry.js"
+    "file": "/Users/user/開発/fastapi/fastapi_prototype/nuxt3-tailwind-auth-app/node_modules/nuxt/dist/app/entry.js"
   }
 }
