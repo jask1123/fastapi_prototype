@@ -150,7 +150,7 @@ async def websocket_endpoint(ws: WebSocket):
             # 接続中のクライアントそれぞれにメッセージを送信（ブロードキャスト）
             for client in list(clients.values()):
                 try:
-                    await client.send_text(f"ID: {key} | Message: {data}")
+                    await client.send_text(f"Message: {data}")
                 except:
                     # 接続が切れた場合、当該クライアントを削除する
                     del clients[client]

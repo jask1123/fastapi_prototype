@@ -6,7 +6,7 @@
       <button class="send-button">Send</button>
     </form>
     <ul id="messages" class="message-list">
-      <li v-for="message in messages" :key="message.id" class="message-item">{{ message.content }}</li>
+      <li v-for="message in messages" :key="message.id" class="message-item">{{ message.v.first_name }}：{{ message.content }}</li>
     </ul>
   </div>
 </template>
@@ -25,8 +25,12 @@ export default {
   methods: {
     setupWebSocket() {
       const ws = new WebSocket('ws://localhost:8000/ws');
+      const auth = useAuth(); // useAuth関数の定義が必要
+      const v = {
+        first_name: String(auth.userState.value?.first_name)
+      };
       ws.onmessage = (event) => {
-        this.messages.push({ id: Date.now(), content: event.data });
+        this.messages.push({ v, content: event.data });
       };
       this.ws = ws;
     },
