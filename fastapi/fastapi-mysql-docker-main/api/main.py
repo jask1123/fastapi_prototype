@@ -155,6 +155,6 @@ async def websocket_endpoint(ws: WebSocket):
                     # 接続が切れた場合、当該クライアントを削除する
                     del clients[client]
     except:
-        await ws.close()
+        # await ws.close()
         # 接続が切れた場合、当該クライアントを削除する
         del clients[key]
