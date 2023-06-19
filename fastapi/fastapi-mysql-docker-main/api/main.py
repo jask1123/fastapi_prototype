@@ -134,13 +134,27 @@ def not_secret_data_api():
 ########## websocket APIs ##########
 ###############################
 
+clients = {}
 
 # WebSocket接続用のエンドポイント
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        # クライアントからメッセージを受信
-        data = await websocket.receive_text()
-        # 受信したメッセージを他のクライアントに送信（ブロードキャスト）
-        await websocket.send_text(data)
+async def websocket_endpoint(ws: WebSocket):
+    await ws.accept()
+    # クライアントを識別するためのIDを取得
+    key = ws.headers.get('sec-websocket-key')
+    clients[key] = ws
+    try:
+        while True:
+            # クライアントからメッセージを受信
+            data = await ws.receive_text()
+            # 接続中のクライアントそれぞれにメッセージを送信（ブロードキャスト）
+            for client in list(clients.values()):
+                try:
+                    await client.send_text(f"Message: {data}")
+                except:
+                    # 接続が切れた場合、当該クライアントを削除する
+                    del clients[client]
+    except:
+        # await ws.close()
+        # 接続が切れた場合、当該クライアントを削除する
+        del clients[key]

@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <h1>リアルタイム掲示板</h1>
-    <ul>
-      <li v-for="(message, index) in messages" :key="index">
-        {{ message }}
-      </li>
-    </ul>
-    <form @submit.prevent="sendMessage">
-      <input type="text" v-model="newMessage" />
-      <button type="submit">送信</button>
+  <div class="chat-container">
+    <h1>WebSocket Chat</h1>
+    <form @submit.prevent="sendMessage" class="message-form">
+      <input type="text" v-model="messageText" autocomplete="off" />
+      <button class="send-button">Send</button>
     </form>
+    <ul id="messages" class="message-list">
+      <li v-for="message in messages" :key="message.id" class="message-item">{{ message.v.first_name }}：{{ message.content }}</li>
+    </ul>
   </div>
 </template>
 
@@ -17,43 +15,60 @@
 export default {
   data() {
     return {
-      messages: [],
-      newMessage: "",
-      websocket: null
+      messageText: '',
+      messages: []
     };
   },
   mounted() {
     this.setupWebSocket();
   },
-  beforeUnmount() {
-    this.closeWebSocket();
-  },
   methods: {
     setupWebSocket() {
-      this.websocket = new WebSocket("ws://localhost:8000/ws");
-
-      this.websocket.onmessage = (event) => {
-        const message = event.data;
-        this.messages.push(message);
+      const ws = new WebSocket('ws://localhost:8000/ws');
+      const auth = useAuth(); // useAuth関数の定義が必要
+      const v = {
+        first_name: String(auth.userState.value?.first_name)
       };
-
-      this.websocket.onclose = () => {
-        // WebSocketが閉じられた場合の処理
+      ws.onmessage = (event) => {
+        this.messages.push({ v, content: event.data });
       };
-    },
-    closeWebSocket() {
-      if (this.websocket) {
-        this.websocket.close();
-      }
+      this.ws = ws;
     },
     sendMessage() {
-      const message = this.newMessage;
-      this.websocket.send(message);
-      this.newMessage = "";
-
-      // 送信したメッセージを即座に表示
-      this.messages.push(message);
+      this.ws.send(this.messageText);
+      this.messageText = '';
     }
   }
 };
 </script>
+
+<style>
+.chat-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.message-form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.message-form input {
+  flex-grow: 1;
+  padding: 5px;
+}
+
+.send-button {
+  margin-left: 10px;
+}
+
+.message-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.message-item {
+  margin-bottom: 5px;
+}
+</style>
