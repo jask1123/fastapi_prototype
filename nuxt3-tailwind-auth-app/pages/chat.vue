@@ -3,7 +3,7 @@
     <h1>WebSocket Chat</h1>
     <form @submit.prevent="sendMessage" class="message-form">
       <input type="text" v-model="messageText" autocomplete="off" />
-      <button class="send-button">Send</button>
+      <button class="send-button">送信</button>
     </form>
     <ul id="messages" class="message-list">
       <li v-for="message in messages" :key="message.id" class="message-item">{{ message.v.first_name }}：{{ message.content }}</li>
